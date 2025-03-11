@@ -1,18 +1,24 @@
 import pytest
 import random
 from configparser import ConfigParser
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from api_client import APIClient
+
 
 def get_config():
     config = ConfigParser()
     config.read("config.ini")
     return config
 
+
 @pytest.fixture(scope="session")
 def api_client():
     config = get_config()
     base_url = config["api"]["base_url"]
     return APIClient(base_url)
+
 
 @pytest.fixture
 def created_pet(api_client):
@@ -26,6 +32,7 @@ def created_pet(api_client):
     response = api_client.post("pet", json=new_pet, headers={"Content-Type": "application/json"})
     assert response.status_code == 200
     return response.json()
+
 
 @pytest.fixture
 def created_user(api_client):
@@ -44,6 +51,7 @@ def created_user(api_client):
     response = api_client.post("user", json=new_user, headers={"Content-Type": "application/json"})
     assert response.status_code == 200
     return new_user
+
 
 @pytest.fixture
 def created_order(api_client):
